@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Link, graphql } from "gatsby"
 import Typography from "@material-ui/core/Typography"
 import { makeStyles } from "@material-ui/core/styles"
 import Img from "gatsby-image"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import Loader from "../components/loader"
 import "./index.css"
 
 const useStyles = makeStyles(() => ({
@@ -37,7 +38,15 @@ const useStyles = makeStyles(() => ({
 const IndexPage = ({ data }) => {
   const classes = useStyles()
 
-  return (
+  const [render, setRender] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRender(true)
+    }, 1000)
+  }, [])
+
+  return render ? (
     <Layout>
       <SEO title="Home" />
       <div className={classes.main}>
@@ -51,6 +60,8 @@ const IndexPage = ({ data }) => {
         ))}
       </div>
     </Layout>
+  ) : (
+    <Loader />
   )
 }
 
