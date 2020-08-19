@@ -1,35 +1,58 @@
+import React from "react"
 import { Link } from "gatsby"
 import PropTypes from "prop-types"
-import React from "react"
+import AppBar from "@material-ui/core/AppBar"
+import Toolbar from "@material-ui/core/Toolbar"
+import Typography from "@material-ui/core/Typography"
+import ShopIcon from "@material-ui/icons/Shop"
+import { makeStyles } from "@material-ui/core/styles"
 
-const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
-    }}
-  >
-    <div
-      style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
-      }}
-    >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+  link: {
+    textDecoration: "none",
+    color: "white",
+  },
+  offset: {
+    ...theme.mixins.toolbar,
+    flexGrow: 1,
+  },
+}))
+
+const Header = ({ siteTitle }) => {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <ShopIcon className={classes.menuButton} />
+          <Typography variant="h6" className={classes.title}>
+            <Link to="/" className={classes.link}>
+              {siteTitle}
+            </Link>
+          </Typography>
+          <Typography
+            variant="body1"
+            className="snipcart-checkout"
+            style={{ cursor: "pointer" }}
+          >
+            Cart
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.offset} />
     </div>
-  </header>
-)
+  )
+}
 
 Header.propTypes = {
   siteTitle: PropTypes.string,
