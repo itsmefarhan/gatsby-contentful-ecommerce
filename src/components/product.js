@@ -62,7 +62,7 @@ const Product = ({ data }) => {
       <Paper elevation={5}>
         <Grid container>
           <Grid item sm={6} xs={12} className={classes.imgGrid}>
-            <img src={fixed.src} alt={title} />
+            <img src={fixed.src} alt={title} style={{ width: "100%" }} />
           </Grid>
           <Grid item sm={6} xs={12} style={{ padding: "20px" }}>
             <Typography variant="h5" className={classes.title}>
