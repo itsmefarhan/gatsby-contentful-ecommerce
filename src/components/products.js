@@ -49,13 +49,18 @@ function valuetext(value) {
 
 const Products = ({ data }) => {
   const classes = useStyles()
+  const { nodes } = data.allContentfulProducts
 
-  let maximum = data.allContentfulProducts.nodes.reduce((acc, item) =>
-    acc.price > item.price ? acc : item
-  )
-  let minimum = data.allContentfulProducts.nodes.reduce((acc, item) =>
-    acc.price < item.price ? acc : item
-  )
+  // Get maximum price from products list
+  let maximum =
+    nodes.length &&
+    nodes.reduce((acc, item) => (acc.price > item.price ? acc : item))
+
+  // Get minimum price from products list
+  let minimum =
+    nodes.length &&
+    nodes.length &&
+    nodes.reduce((acc, item) => (acc.price < item.price ? acc : item))
 
   const [search, setSearch] = useState("")
   const [products, setProducts] = useState([])
@@ -65,9 +70,11 @@ const Products = ({ data }) => {
   const handleSearch = e => {
     setSearch(e.target.value)
 
-    const productsArray = data.allContentfulProducts.nodes.filter(product =>
-      product.title.toLowerCase().includes(search.toLowerCase())
-    )
+    const productsArray =
+      nodes.length &&
+      nodes.filter(product =>
+        product.title.toLowerCase().includes(search.toLowerCase())
+      )
 
     setProducts(productsArray)
   }
@@ -85,9 +92,8 @@ const Products = ({ data }) => {
     </Link>
   )
 
-  const returnPrice =
-    price !== 0 &&
-    data.allContentfulProducts.nodes.filter(item => item.price <= price)
+  const priceFilter =
+    price !== 0 && nodes.length && nodes.filter(item => item.price <= price)
 
   return (
     <>
@@ -142,9 +148,9 @@ const Products = ({ data }) => {
         {/* End search results */}
 
         {/* Search results */}
-        {returnPrice.length &&
+        {priceFilter.length &&
           search === "" &&
-          returnPrice.map(product => (
+          priceFilter.map(product => (
             <Fragment key={product.title}>
               {renderData(
                 product.category.title.toLowerCase(),
@@ -159,9 +165,10 @@ const Products = ({ data }) => {
 
         {/* All products */}
         {search === "" &&
-          returnPrice.length === 0 &&
+          priceFilter.length === 0 &&
           products.length === 0 &&
-          data.allContentfulProducts.nodes.map(node => {
+          nodes.length &&
+          nodes.map(node => {
             return (
               <Fragment key={node.title}>
                 {renderData(
