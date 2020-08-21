@@ -2,10 +2,15 @@ import React, { useState, Fragment } from "react"
 import { Link } from "gatsby"
 import Typography from "@material-ui/core/Typography"
 import TextField from "@material-ui/core/TextField"
+import Slider from "@material-ui/core/Slider"
 import { makeStyles } from "@material-ui/core/styles"
 import Img from "gatsby-image"
 
 const useStyles = makeStyles(() => ({
+  pricePicker: {
+    width: 300,
+    margin: "0 auto",
+  },
   searchContainer: {
     display: "flex",
     justifyContent: "center",
@@ -38,12 +43,25 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
+function valuetext(value) {
+  return `${value}`
+}
+
 const Products = ({ data }) => {
   const classes = useStyles()
 
+  let maximum = data.allContentfulProducts.nodes.reduce((acc, item) =>
+    acc.price > item.price ? acc : item
+  )
+  let minimum = data.allContentfulProducts.nodes.reduce((acc, item) =>
+    acc.price < item.price ? acc : item
+  )
+
   const [search, setSearch] = useState("")
   const [products, setProducts] = useState([])
+  const [price, setPrice] = useState(maximum.price)
 
+  // Filter products based on search
   const handleSearch = e => {
     setSearch(e.target.value)
 
@@ -54,15 +72,22 @@ const Products = ({ data }) => {
     setProducts(productsArray)
   }
 
+  // Filter products based on price
+  const handlePrice = (_, val) => setPrice(val)
+
   const renderData = (catTitle, slug, img, title, price) => (
     <Link to={`/category/${catTitle}/${slug}`} className={classes.link}>
       <div>
         <Img fixed={img} className={classes.image} />
         <Typography className={classes.title}>{title}</Typography>
-        <Typography>{price}</Typography>
+        <Typography>$ {price}</Typography>
       </div>
     </Link>
   )
+
+  const returnPrice =
+    price !== 0 &&
+    data.allContentfulProducts.nodes.filter(item => item.price <= price)
 
   return (
     <>
@@ -79,6 +104,25 @@ const Products = ({ data }) => {
         />
       </div>
       {/* End search field */}
+
+      {/* Price picker */}
+      <div className={classes.pricePicker}>
+        <Typography id="discrete-slider" gutterBottom>
+          Price
+        </Typography>
+        <Slider
+          value={price}
+          onChange={handlePrice}
+          getAriaValueText={valuetext}
+          aria-labelledby="discrete-slider"
+          valueLabelDisplay="auto"
+          step={maximum.price - minimum.price > 5 ? 5 : 1}
+          marks
+          min={minimum.price}
+          max={maximum.price}
+        />
+      </div>
+      {/* End price picker */}
 
       <div className={classes.main}>
         {/* Search results */}
@@ -97,8 +141,26 @@ const Products = ({ data }) => {
           ))}
         {/* End search results */}
 
+        {/* Search results */}
+        {returnPrice.length &&
+          search === "" &&
+          returnPrice.map(product => (
+            <Fragment key={product.title}>
+              {renderData(
+                product.category.title.toLowerCase(),
+                product.slug,
+                product.image.fixed,
+                product.title,
+                product.price
+              )}
+            </Fragment>
+          ))}
+        {/* End search results */}
+
         {/* All products */}
         {search === "" &&
+          returnPrice.length === 0 &&
+          products.length === 0 &&
           data.allContentfulProducts.nodes.map(node => {
             return (
               <Fragment key={node.title}>

@@ -32,7 +32,7 @@ const Header = ({ siteTitle }) => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <ShopIcon className={classes.menuButton} />
           <Typography variant="h6" className={classes.title}>
