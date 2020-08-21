@@ -4,6 +4,8 @@ import Typography from "@material-ui/core/Typography"
 import TextField from "@material-ui/core/TextField"
 import { makeStyles } from "@material-ui/core/styles"
 import Img from "gatsby-image"
+import { Carousel } from "react-responsive-carousel"
+import "react-responsive-carousel/lib/styles/carousel.min.css"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Loader from "../components/loader"
@@ -66,6 +68,7 @@ const IndexPage = ({ data }) => {
     }, 1000)
   }, [])
 
+  // Filter products based on search field
   const handleSearch = e => {
     setSearch(e.target.value)
 
@@ -92,6 +95,18 @@ const IndexPage = ({ data }) => {
         />
       </div>
       {/* End search field */}
+
+      {/* Carousel */}
+      <Carousel showThumbs={false} infiniteLoop autoPlay stopOnHover>
+        {data.allContentfulCategories.nodes.map(node => (
+          <Img
+            fluid={node.image.fluid}
+            key={node.title}
+            style={{ height: "400px" }}
+          />
+        ))}
+      </Carousel>
+      {/* End carousel */}
 
       <div className={classes.main}>
         {/* Search results */}
@@ -143,6 +158,9 @@ export const data = graphql`
         image {
           fixed(width: 300, height: 300) {
             ...GatsbyContentfulFixed_withWebp
+          }
+          fluid {
+            ...GatsbyContentfulFluid_withWebp
           }
         }
       }
